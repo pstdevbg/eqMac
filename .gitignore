@@ -8,5 +8,11 @@ dist
 !modules/**/dist
 **/package-lock.json
 **/yarn.lock
+# Root lockfile is committed so builds resolve the exact versions that are known to work
+!/yarn.lock
 
 native/app/Sandbox.playground/Resources/track.mp3
+
+# Local build output (./build.sh)
+/build/
+native/app/Embedded/

@@ -42,6 +42,7 @@ class Engine {
     engine.setInputDevice(sources.system.device)
     format = engine.inputNode.inputFormat(forBus: 0)
     Console.log("Set Input Engine format to: \(format.description)")
+    equalizers.active!.sampleRate = format.sampleRate
 
     // Attach Effects
     engine.attach(equalizers.active!.eq)

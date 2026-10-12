@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13ABE03F65F6F5CF51409EA3 /* ParametricEqualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B821B269F070267AD6D3B30 /* ParametricEqualizer.swift */; };
+		26BE30AE0034D9901BAE9605 /* ParametricEqualizerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBE6932832BF9CC4798F39B /* ParametricEqualizerState.swift */; };
 		78048A62265041600020AAD9 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78048A61265041600020AAD9 /* DateExtensions.swift */; };
 		7810723826112C2B005DB609 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7810723726112C2B005DB609 /* Security.framework */; };
 		78242E96261A8AEE00058ADE /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 78242E95261A8AEE00058ADE /* Connectivity */; };
@@ -27,6 +29,8 @@
 		78E562F326139ACF00BF3F19 /* Data+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78E562F226139ACF00BF3F19 /* Data+extensions.swift */; };
 		78F28AD5274D25580005474D /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = 78F28AD4274D25580005474D /* Shared */; };
 		78F28AD6274D2A580005474D /* assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 785E4F86274D187D003D6DB0 /* assets.xcassets */; };
+		7DA388EBF699468F1B4F8CFD /* ParametricEqualizerDataBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E79D9622D12A68FEDBC353 /* ParametricEqualizerDataBus.swift */; };
+		929798BF16805C2F4CF4F765 /* ParametricEqualizerPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68C01B8B473C2E9FDB17EF6 /* ParametricEqualizerPreset.swift */; };
 		E00618E220F14C08003BA0B0 /* UIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00618E120F14C08003BA0B0 /* UIState.swift */; };
 		E00618EB20F22BD1003BA0B0 /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00618EA20F22BD1003BA0B0 /* Effect.swift */; };
 		E00618ED20F292B9003BA0B0 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00618EC20F292B9003BA0B0 /* Networking.swift */; };
@@ -97,10 +101,13 @@
 		E0F661861FDDED0C00252923 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F661851FDDED0C00252923 /* ViewController.swift */; };
 		E0FFB703200119060003EC9E /* StatusItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FFB702200119060003EC9E /* StatusItem.swift */; };
 		E0FFB705200679DD0003EC9E /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FFB704200679DD0003EC9E /* Engine.swift */; };
+		E801EF642AA1C90D6C211079 /* AutoEq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E93BA4D3E60F794D64A476 /* AutoEq.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B821B269F070267AD6D3B30 /* ParametricEqualizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ParametricEqualizer.swift; sourceTree = "<group>"; };
 		454077A0596E209B8ABF4043 /* Pods-eqMac.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eqMac.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-eqMac/Pods-eqMac.debug.xcconfig"; sourceTree = "<group>"; };
+		64E93BA4D3E60F794D64A476 /* AutoEq.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AutoEq.swift; sourceTree = "<group>"; };
 		78048A61265041600020AAD9 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		7810723726112C2B005DB609 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		783A6F9F2670225C00A96B42 /* Benchmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Benchmark.swift; sourceTree = "<group>"; };
@@ -117,8 +124,11 @@
 		78C7BDB22687A8F800E0C161 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		78D8C3462569B7980084739C /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		78E562F226139ACF00BF3F19 /* Data+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+extensions.swift"; sourceTree = "<group>"; };
+		8CBE6932832BF9CC4798F39B /* ParametricEqualizerState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ParametricEqualizerState.swift; sourceTree = "<group>"; };
+		90E79D9622D12A68FEDBC353 /* ParametricEqualizerDataBus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ParametricEqualizerDataBus.swift; sourceTree = "<group>"; };
 		9C0FBD24DF0BA400D806B8AC /* Pods_eqMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_eqMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3D606D740D37C93ABA157E7 /* Pods-eqMac.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-eqMac.release.xcconfig"; path = "../Pods/Target Support Files/Pods-eqMac/Pods-eqMac.release.xcconfig"; sourceTree = "<group>"; };
+		C68C01B8B473C2E9FDB17EF6 /* ParametricEqualizerPreset.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ParametricEqualizerPreset.swift; sourceTree = "<group>"; };
 		E00618E120F14C08003BA0B0 /* UIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIState.swift; sourceTree = "<group>"; };
 		E00618EA20F22BD1003BA0B0 /* Effect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		E00618EC20F292B9003BA0B0 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
@@ -260,6 +270,19 @@
 				A3D606D740D37C93ABA157E7 /* Pods-eqMac.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		D862994759742ED5BD073550 /* Parametric */ = {
+			isa = PBXGroup;
+			children = (
+				C68C01B8B473C2E9FDB17EF6 /* ParametricEqualizerPreset.swift */,
+				8CBE6932832BF9CC4798F39B /* ParametricEqualizerState.swift */,
+				1B821B269F070267AD6D3B30 /* ParametricEqualizer.swift */,
+				90E79D9622D12A68FEDBC353 /* ParametricEqualizerDataBus.swift */,
+				64E93BA4D3E60F794D64A476 /* AutoEq.swift */,
+			);
+			name = Parametric;
+			path = Parametric;
 			sourceTree = "<group>";
 		};
 		E004A8F3209D08AF00A878AA /* Extensions */ = {
@@ -472,6 +495,7 @@
 				E0E8B62920EEB6A900DE905C /* EqualizersState.swift */,
 				E0E2CFF62104EA7A002DC989 /* Equalizers.swift */,
 				E057A6462270582C0019D13C /* EqualizersDataBus.swift */,
+				D862994759742ED5BD073550 /* Parametric */,
 			);
 			path = Equalizers;
 			sourceTree = "<group>";
@@ -729,7 +753,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ $CONFIGURATION != \"Release\" ]]; then\nexit 0\nfi\n\nif which sentry-cli >/dev/null; then\nsource ~/.zshrc\nexport SENTRY_ORG=bitgapp\nexport SENTRY_PROJECT=eqmac-swift\nERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" --log-level=debug 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nexit 1\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nexit 1\nfi\n";
+			shellScript = "# Local build: never upload dSYMs to the upstream Sentry project\nexit 0\n\nif which sentry-cli >/dev/null; then\nsource ~/.zshrc\nexport SENTRY_ORG=bitgapp\nexport SENTRY_PROJECT=eqmac-swift\nERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" --log-level=debug 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nexit 1\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nexit 1\nfi\n";
 		};
 		E0A48D6223C6028F00700C39 /* Run Script - Hardruntime + Sign Sparkle */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -854,6 +878,11 @@
 				E00618E220F14C08003BA0B0 /* UIState.swift in Sources */,
 				E04E256221E23CD5002DFC2A /* AdvancedEqualizer.swift in Sources */,
 				E012A4702044C4DA0029C800 /* Sysctl.swift in Sources */,
+				929798BF16805C2F4CF4F765 /* ParametricEqualizerPreset.swift in Sources */,
+				26BE30AE0034D9901BAE9605 /* ParametricEqualizerState.swift in Sources */,
+				13ABE03F65F6F5CF51409EA3 /* ParametricEqualizer.swift in Sources */,
+				7DA388EBF699468F1B4F8CFD /* ParametricEqualizerDataBus.swift in Sources */,
+				E801EF642AA1C90D6C211079 /* AutoEq.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,7 +1068,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = singlefile;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR) $(PROJECT_DIR)/Source/Vendor";
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(PROJECT_DIR) $(PROJECT_DIR)/Source/Vendor";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Source/Helpers/ExceptionCatcher.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1106,7 +1135,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR) $(PROJECT_DIR)/Source/Vendor";
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(PROJECT_DIR) $(PROJECT_DIR)/Source/Vendor";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Source/Helpers/ExceptionCatcher.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;

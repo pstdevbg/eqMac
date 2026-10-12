@@ -224,7 +224,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export SUDO_ASKPASS=~/askpass.sh\n# Uninstall any new driver leftovers\nsudo -A rm -rf /Library/Audio/Plug-Ins/HAL/eqMac.driver/\n# Install the new driver\nsudo -A cp -f -r \"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME\" /Library/Audio/Plug-Ins/HAL/\n# Restart CoreAudio\nsudo -A launchctl kickstart -k system/com.apple.audio.coreaudiod\n";
+			shellScript = "# Skipped by build.sh (EQMAC_SKIP_DRIVER_INSTALL=YES); install with ./build.sh --install-driver instead\nif [ \"$EQMAC_SKIP_DRIVER_INSTALL\" = \"YES\" ]; then exit 0; fi\nexport SUDO_ASKPASS=~/askpass.sh\n# Uninstall any new driver leftovers\nsudo -A rm -rf /Library/Audio/Plug-Ins/HAL/eqMac.driver/\n# Install the new driver\nsudo -A cp -f -r \"$BUILT_PRODUCTS_DIR/$FULL_PRODUCT_NAME\" /Library/Audio/Plug-Ins/HAL/\n# Restart CoreAudio\nsudo -A launchctl kickstart -k system/com.apple.audio.coreaudiod\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

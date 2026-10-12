@@ -107,16 +107,11 @@ class UI: StoreSubscriber {
     // Unpack Archive
     let fs = FileManager.default
     
-    if fs.fileExists(atPath: remoteZipPath.path) {
-      try! Zip.unzipFile(remoteZipPath, destination: localPath, overwrite: true, password: nil) // Unzip
-    } else {
-      if !fs.fileExists(atPath: localZipPath.path) {
-        Console.log("\(localZipPath.path) doesnt exist")
-        let bundleUIZipPath = Bundle.main.url(forResource: "ui", withExtension: "zip", subdirectory: "Embedded")!
-        try! fs.copyItem(at: bundleUIZipPath, to: localZipPath)
-      }
-      try! Zip.unzipFile(localZipPath, destination: localPath, overwrite: true, password: nil) // Unzip
-    }
+    // Always use the UI bundled with this build (ignore cached remote/local zips)
+    let bundleUIZipPath = Bundle.main.url(forResource: "ui", withExtension: "zip", subdirectory: "Embedded")!
+    try? fs.removeItem(at: localZipPath)
+    try! fs.copyItem(at: bundleUIZipPath, to: localZipPath)
+    try! Zip.unzipFile(localZipPath, destination: localPath, overwrite: true, password: nil) // Unzip
   }
   
   static var localZipPath: URL {
@@ -424,7 +419,8 @@ class UI: StoreSubscriber {
       startUILoad(url)
     }
 
-    if (Application.store.state.settings.doOTAUpdates) {
+    // Always load the locally built UI so custom UI changes take effect
+    if (false && Application.store.state.settings.doOTAUpdates) {
       remoteIsReachable() { reachable in
         if reachable {
           loadRemote()

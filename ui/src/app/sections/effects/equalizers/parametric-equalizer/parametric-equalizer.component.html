@@ -1,0 +1,69 @@
+<eqm-loading *ngIf="!selectedPreset || !presets"></eqm-loading>
+<div *ngIf="selectedPreset && presets" fxLayout="column" fxLayoutGap="6px" class="w-100 h-100 parametric">
+
+  <!-- Frequency response -->
+  <div class="graph" [style.height.px]="90">
+    <svg [attr.viewBox]="'0 0 ' + graphWidth + ' 90'" preserveAspectRatio="none" class="w-100 h-100">
+      <line *ngFor="let f of gridFrequencies" [attr.x1]="graphX(f)" [attr.x2]="graphX(f)" y1="0" y2="90" class="grid"></line>
+      <line x1="0" [attr.x2]="graphWidth" [attr.y1]="zeroLineY" [attr.y2]="zeroLineY" class="grid zero"></line>
+      <path [attr.d]="responsePath" class="response" [style.stroke]="enabled ? colors.accent : '#555'"></path>
+      <ng-container *ngFor="let band of selectedPreset.bands">
+        <circle *ngIf="band.enabled" [attr.cx]="graphX(band.frequency)" [attr.cy]="graphY(band.gain)" r="2" class="handle"></circle>
+      </ng-container>
+    </svg>
+    <eqm-label *ngFor="let f of gridFrequencies" class="axis-label" [fontSize]="8" [style.left.%]="graphX(f) / graphWidth * 100">{{frequencyLabel(f)}}</eqm-label>
+    <eqm-label class="range-label" [fontSize]="8">{{graphRangeLabel}}</eqm-label>
+  </div>
+
+  <!-- Preamp -->
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="preamp">
+    <eqm-value-screen [enabled]="enabled">Preamp:</eqm-value-screen>
+    <div fxFlex>
+      <eqm-flat-slider [enabled]="enabled" [min]="limits.preamp.min" [max]="limits.preamp.max" [middle]="0"
+        [value]="selectedPreset.preamp" (userChangedValue)="setPreamp($event.value)"
+        (stickedToMiddle)="performHapticFeedback()" orientation="horizontal">
+      </eqm-flat-slider>
+    </div>
+    <eqm-value-screen [enabled]="enabled">{{screenValue(selectedPreset.preamp)}}</eqm-value-screen>
+  </div>
+
+  <!-- Bands -->
+  <div class="row header">
+    <span></span>
+    <eqm-label [fontSize]="9">Type</eqm-label>
+    <eqm-label [fontSize]="9">Freq (Hz)</eqm-label>
+    <eqm-label [fontSize]="9">Gain (dB)</eqm-label>
+    <eqm-label [fontSize]="9">Q</eqm-label>
+    <span></span>
+  </div>
+
+  <div class="bands" [style.max-height.px]="22 * 10">
+    <eqm-label *ngIf="!selectedPreset.bands.length" class="empty" [fontSize]="10">
+      No bands. Add one, or load your headphones from AutoEq with the headphones button.
+    </eqm-label>
+    <div *ngFor="let band of selectedPreset.bands; index as i; trackBy: bandTracker" class="row" [class.disabled]="!band.enabled">
+      <eqm-checkbox [checked]="band.enabled" [enabled]="enabled" (checkedChange)="toggleBand(i)" eqmTooltip="Enable band"></eqm-checkbox>
+      <eqm-button type="narrow" [height]="18" [enabled]="enabled" (pressed)="cycleType(i)" [eqmTooltip]="typeName(band.type) + ' (click to change)'">
+        <eqm-label [fontSize]="9" [clickable]="true">{{typeLabel(band.type)}}</eqm-label>
+      </eqm-button>
+      <eqm-input-field [fontSize]="10" [enabled]="enabled" [text]="fieldText(i, 'frequency')"
+        [color]="fieldInvalid(i, 'frequency') ? '#e74c3c' : colors.accent"
+        (textChange)="fieldChanged(i, 'frequency', $event)" (enter)="fieldCommitted(i, 'frequency')"></eqm-input-field>
+      <eqm-input-field [fontSize]="10" [enabled]="enabled" [text]="fieldText(i, 'gain')"
+        [color]="fieldInvalid(i, 'gain') ? '#e74c3c' : colors.accent"
+        (textChange)="fieldChanged(i, 'gain', $event)" (enter)="fieldCommitted(i, 'gain')"></eqm-input-field>
+      <eqm-input-field [fontSize]="10" [enabled]="enabled" [text]="fieldText(i, 'q')"
+        [color]="fieldInvalid(i, 'q') ? '#e74c3c' : colors.accent"
+        (textChange)="fieldChanged(i, 'q', $event)" (enter)="fieldCommitted(i, 'q')"></eqm-input-field>
+      <eqm-button type="transparent" [enabled]="enabled" (pressed)="removeBand(i)" eqmTooltip="Remove band">
+        <eqm-icon name="minus" [width]="8" [height]="8" [stroke]="2"></eqm-icon>
+      </eqm-button>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <eqm-button type="narrow" [height]="20" [enabled]="enabled && selectedPreset.bands.length < maxBands" (pressed)="addBand()">
+      <eqm-label [clickable]="true" [fontSize]="10">+ Add band ({{selectedPreset.bands.length}}/{{maxBands}})</eqm-label>
+    </eqm-button>
+  </div>
+</div>

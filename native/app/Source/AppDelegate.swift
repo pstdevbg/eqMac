@@ -25,32 +25,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, SUUpdaterDelegate {
       window.close()
     }
 
-    Application.updater.delegate = self
-    Application.updater.feedURL = Settings.updatesFeedUrl
-    
-    updateProcessed.once { _ in
-      Application.start()
-    }
-
-    if (Application.store.state.settings.doAutoCheckUpdates) {
-      var stillCheckingConnection = true
-      Networking.checkConnected { connected in
-        stillCheckingConnection = false
-        if (connected) {
-          Application.updater.checkForUpdatesInBackground()
-        } else {
-          self.updateProcessed.emit()
-        }
-      }
-
-      Async.delay(2000) {
-        if (stillCheckingConnection) {
-          self.updateProcessed.emit()
-        }
-      }
-    } else {
-      self.updateProcessed.emit()
-    }
+    // Update checks disabled: Sparkle is never initialized, start straight away
+    Application.start()
 
     NSWorkspace.shared.notificationCenter.addObserver(
         self, selector: #selector(didWakeUp(event:)),

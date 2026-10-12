@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+.parametric {
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.graph {
+  position: relative;
+  background-color: #1d1e21;
+  border-radius: 4px;
+  overflow: hidden;
+
+  svg {
+    display: block;
+  }
+
+  .grid {
+    stroke: #3e4146;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .zero {
+    stroke: #55585e;
+  }
+
+  .response {
+    fill: none;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .handle {
+    fill: #8e8e93;
+  }
+
+  .axis-label {
+    position: absolute;
+    bottom: 1px;
+    margin-left: 3px;
+    opacity: 0.6;
+  }
+
+  .range-label {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    opacity: 0.6;
+  }
+}
+
+.preamp {
+  height: 24px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 16px 30px 1fr 1fr 1fr 16px;
+  column-gap: 6px;
+  align-items: center;
+  height: 22px;
+
+  &.header {
+    height: 14px;
+    opacity: 0.7;
+  }
+
+  &.disabled {
+    opacity: 0.45;
+  }
+}
+
+.bands {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.empty {
+  display: block;
+  text-align: center;
+  padding: 4px 0;
+  opacity: 0.7;
+}

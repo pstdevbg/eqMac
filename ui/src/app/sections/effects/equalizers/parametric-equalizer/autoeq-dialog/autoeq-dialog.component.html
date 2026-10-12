@@ -1,0 +1,64 @@
+<div fxLayout="column" fxLayoutGap="8px" class="autoeq">
+  <eqm-label class="title">Find your headphones (AutoEq)</eqm-label>
+
+  <eqm-input-field [text]="query" (textChange)="queryChanged($event)" (enter)="selectedResult && load()"
+    placeholder="Search, e.g. Sennheiser HD 650 or hd650" [enabled]="!!brands.length"></eqm-input-field>
+
+  <!-- Brands / models -->
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="list-header">
+    <eqm-label [fontSize]="10" *ngIf="mode === 'brands'">Brands ({{brands.length}})</eqm-label>
+    <eqm-label [fontSize]="10" *ngIf="mode === 'models' && !browsedBrand">Results ({{models.length}}{{models.length === 100 ? '+' : ''}})</eqm-label>
+    <eqm-label [fontSize]="10" *ngIf="browsedBrand" class="link" [clickable]="true" (click)="backToBrands()">‹ All brands</eqm-label>
+    <eqm-label [fontSize]="10" *ngIf="browsedBrand">{{browsedBrand}} ({{models.length}})</eqm-label>
+  </div>
+  <div class="list models">
+    <ng-container *ngIf="mode === 'brands'">
+      <div *ngFor="let brand of brands; trackBy: trackByIndex" class="item" (click)="browseBrand(brand)">
+        <eqm-label [fontSize]="11" [clickable]="true">{{brand}}</eqm-label>
+        <eqm-label [fontSize]="10" class="chevron">›</eqm-label>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="mode === 'models'">
+      <div *ngFor="let model of models; trackBy: trackByIndex" class="item" [class.selected]="model === selectedModel"
+        [style.background-color]="model === selectedModel ? colors.accent : null" (click)="selectModel(model)" (dblclick)="load(model.entries[0])">
+        <eqm-label [fontSize]="11" [clickable]="true" [color]="model === selectedModel ? '#000' : undefined">{{modelLabel(model)}}</eqm-label>
+        <eqm-label [fontSize]="9" class="count" [color]="model === selectedModel ? '#000' : undefined">{{model.entries.length}}</eqm-label>
+      </div>
+      <eqm-label *ngIf="!models.length && !busy && query.trim().length" [fontSize]="10" class="empty">No headphones match "{{query.trim()}}"</eqm-label>
+    </ng-container>
+  </div>
+
+  <!-- Measurements -->
+  <div fxLayout="row" fxLayoutAlign="start center" class="list-header">
+    <eqm-label [fontSize]="10">Measurement{{selectedModel ? ' (' + selectedModel.entries.length + ')' : ''}}</eqm-label>
+  </div>
+  <div class="list results">
+    <div *ngFor="let result of selectedModel?.entries; trackBy: trackByIndex" class="item"
+      [style.background-color]="result === selectedResult ? colors.accent : null"
+      (click)="selectResult(result)" (dblclick)="load(result)">
+      <eqm-label [fontSize]="11" [clickable]="true" [color]="result === selectedResult ? '#000' : undefined">{{result.label}}</eqm-label>
+    </div>
+    <eqm-label *ngIf="!selectedModel" [fontSize]="10" class="empty">Select a model</eqm-label>
+  </div>
+
+  <eqm-label *ngIf="status" [fontSize]="10" class="status">{{status}}</eqm-label>
+  <div *ngIf="error" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+    <eqm-label [fontSize]="10" class="error">{{error}}</eqm-label>
+    <eqm-button *ngIf="!brands.length" type="narrow" [height]="20" (pressed)="loadBrands()">
+      <eqm-label [clickable]="true" [fontSize]="10">Retry</eqm-label>
+    </eqm-button>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="10px">
+    <eqm-button type="narrow" fxFlex [enabled]="!busy && !!selectedResult" (pressed)="load()">
+      <eqm-label [clickable]="true">Load</eqm-label>
+    </eqm-button>
+    <eqm-button type="narrow" fxFlex (pressed)="close()">
+      <eqm-label [clickable]="true">Cancel</eqm-label>
+    </eqm-button>
+  </div>
+
+  <eqm-label [fontSize]="9" class="credit" [clickable]="true" (click)="openAutoEq()">
+    Presets by AutoEq (Jaakko Pasanen), MIT licensed
+  </eqm-label>
+</div>

@@ -28,6 +28,17 @@ class Equalizer: Effect {
     return gains
   }
   
+  // Sample rate the engine runs this equalizer at, set by the Engine once the format is known
+  var sampleRate: Double = 48_000 {
+    didSet {
+      if oldValue != sampleRate {
+        sampleRateDidSet()
+      }
+    }
+  }
+
+  func sampleRateDidSet () {}
+
   init (numberOfBands: Int) {
     eq = AVAudioUnitEQ(numberOfBands: numberOfBands)
     eq.globalGain = 0

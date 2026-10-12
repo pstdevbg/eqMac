@@ -71,6 +71,8 @@ import { HelpComponent } from './sections/help/help.component'
 import { MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog'
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component'
 import { EqualizerPresetsComponent } from './sections/effects/equalizers/presets/equalizer-presets.component'
+import { ParametricEqualizerComponent } from './sections/effects/equalizers/parametric-equalizer/parametric-equalizer.component'
+import { AutoEqDialogComponent } from './sections/effects/equalizers/parametric-equalizer/autoeq-dialog/autoeq-dialog.component'
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component'
 import { OptionsDialogComponent } from './components/options-dialog/options-dialog.component'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
@@ -106,6 +108,8 @@ import { UIService } from './services/ui.service'
     SystemComponent,
     BasicEqualizerComponent,
     AdvancedEqualizerComponent,
+    ParametricEqualizerComponent,
+    AutoEqDialogComponent,
     VolumeBoosterBalanceComponent,
     SettingsComponent,
     OptionsComponent,

@@ -94,7 +94,19 @@ export class AppComponent implements OnInit, AfterContentInit {
       }
     }
 
+    // Grow the window so open dialogs are never cut off
+    const dialogHeight = this.openDialogHeight
+    if (dialogHeight > minHeight) {
+      minHeight = dialogHeight
+    }
+
     return minHeight
+  }
+
+  get openDialogHeight () {
+    const margin = 40
+    const panes = Array.from(document.querySelectorAll<HTMLElement>('.cdk-overlay-pane'))
+    return panes.reduce((height, pane) => Math.max(height, pane.offsetHeight ? pane.offsetHeight + margin : 0), 0)
   }
 
   get minWidth () {
@@ -250,6 +262,10 @@ This data would help us improve and grow the product.`
 
   async startDimensionsSync () {
     this.handleWindowResize()
+    // Resize for dialogs right away instead of waiting for the next interval tick
+    const syncAfterRender = () => setTimeout(() => this.syncMinHeight(), 50)
+    this.dialog.afterOpened.subscribe(syncAfterRender)
+    this.dialog.afterAllClosed.subscribe(syncAfterRender)
     setInterval(() => {
       this.syncMinHeight()
       this.syncMaxHeight()

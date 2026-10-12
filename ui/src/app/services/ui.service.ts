@@ -67,19 +67,7 @@ export class UIService extends DataService {
     if (!uiSettings.knobControlStyle) {
       this.settings.knobControlStyle = 'directional'
     }
-    if (typeof uiSettings.volumeFeatureEnabled !== 'boolean') {
-      this.settings.volumeFeatureEnabled = true
-    }
-
-    if (typeof uiSettings.balanceFeatureEnabled !== 'boolean') {
-      this.settings.balanceFeatureEnabled = true
-    }
-    if (typeof uiSettings.equalizersFeatureEnabled !== 'boolean') {
-      this.settings.equalizersFeatureEnabled = true
-    }
-    if (typeof uiSettings.outputFeatureEnabled !== 'boolean') {
-      this.settings.outputFeatureEnabled = true
-    }
+    Object.assign(this.settings, UIService.ALL_FEATURES_ENABLED)
     this.setSettings(this.settings)
 
     this.scale = uiScale
@@ -168,8 +156,18 @@ export class UIService extends DataService {
     return this.settings
   }
 
+  // Feature guards disabled: every feature section is always shown
+  static readonly ALL_FEATURES_ENABLED: Partial<UISettings> = {
+    volumeFeatureEnabled: true,
+    balanceFeatureEnabled: true,
+    equalizersFeatureEnabled: true,
+    outputFeatureEnabled: true
+  }
+
   async setSettings (settings: Partial<UISettings>) {
+    settings = { ...settings, ...UIService.ALL_FEATURES_ENABLED }
     this.settings = await this.request({ method: 'POST', endpoint: '/settings', data: settings })
+    Object.assign(this.settings, UIService.ALL_FEATURES_ENABLED)
     this.settingsChanged.next(this.settings)
     return this.settings
   }

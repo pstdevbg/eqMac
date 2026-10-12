@@ -490,6 +490,10 @@ class Application {
         if let preset = AdvancedEqualizer.getPreset(id: equalizersState.advanced.selectedPresetId) {
           return preset.gains.global
         }
+      case .parametric:
+        if let preset = ParametricEqualizer.getPreset(id: equalizersState.parametric.selectedPresetId) {
+          return preset.preamp
+        }
       }
       return 0
     })()
@@ -549,7 +553,9 @@ class Application {
     Storage.synchronize()
     stopListeners()
     stopRemoveEngines {
-      switchBackToLastKnownDevice()
+      if Driver.device != nil {
+        switchBackToLastKnownDevice()
+      }
       completion()
     }
   }
@@ -619,7 +625,8 @@ class Application {
   }
   
   static func checkForUpdates () {
-    updater.checkForUpdates(nil)
+    // Update checks disabled
+    Console.log("Update checks are disabled in this build")
   }
   
   static func uninstall () {

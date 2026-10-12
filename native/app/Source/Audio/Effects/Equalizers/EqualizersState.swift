@@ -9,6 +9,7 @@
 import Foundation
 import ReSwift
 import SwiftyUserDefaults
+import BetterCodable
 
 class EqualizersState: State {
   var enabled = true
@@ -16,6 +17,8 @@ class EqualizersState: State {
   var previousType: EqualizerType?
   var basic = BasicEqualizerState()
   var advanced = AdvancedEqualizerState()
+  // Defaulted so state saved before the Parametric Equalizer existed still decodes
+  @DefaultCodable<ParametricEqualizerStateDefault> var parametric = ParametricEqualizerStateDefault.value
 }
 
 enum EqualizersAction: Action {
@@ -39,6 +42,7 @@ func EqualizersStateReducer(action: Action, state: EqualizersState?) -> Equalize
   
   state.basic = BasicEqualizerStateReducer(action: action, state: state.basic)
   state.advanced = AdvancedEqualizerStateReducer(action: action, state: state.advanced)
+  state.parametric = ParametricEqualizerStateReducer(action: action, state: state.parametric)
   
   return state
 }

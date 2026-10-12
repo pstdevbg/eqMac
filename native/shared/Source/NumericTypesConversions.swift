@@ -89,11 +89,9 @@ extension UInt32: IntRepresentable, Int32Representable, UIntRepresentable, Doubl
   }
   
   init (from array: [UInt8]) {
-    let bigEndianValue = array.withUnsafeBufferPointer {
-      ($0.baseAddress!.withMemoryRebound(to: UInt32.self, capacity: 1) { $0 })
-    }.pointee
-    let value = UInt32(bigEndian: bigEndianValue)
-    self = value
+    // Big-endian fold of the first 4 bytes. The previous version escaped the buffer
+    // pointer and read freed memory, which crashes under MTE on newer Apple Silicon.
+    self = array.prefix(4).reduce(0) { ($0 << 8) | UInt32($1) }
   }
 }
 
