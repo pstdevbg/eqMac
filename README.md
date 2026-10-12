@@ -1,61 +1,79 @@
-<p align="center">
-  <img width="400" src="https://github.com/bitgapp/eqMac/raw/master/assets/logos/promo-dark.png"/>
-</p>
+# eqMac 1.9.2: local build with a parametric EQ
+
+A personal fork of [eqMac](https://github.com/bitgapp/eqMac) v1.9.2, the open-source system-wide audio equalizer for macOS. It builds on current macOS and Xcode, adds a parametric equalizer with built-in [AutoEq](https://github.com/jaakkopasanen/AutoEq) headphone presets, and has no update checks, crash reporting or analytics.
 
 <p align="center">
-  <img width="1024" src="https://github.com/bitgapp/eqMac/raw/master/assets/screenshots/autoeq-promo.png"/>
+  <img width="446" src="assets/screenshots/parametric-eq.png" alt="eqMac with the Parametric equalizer showing the AutoEq preset for HIFIMAN Edition XS (oratory1990)"/>
 </p>
 
-<p align="center">
-  <a href="https://discord.eqmac.app"><img src="https://img.shields.io/badge/chat-discord-black?style=flat&logo=discord" alt="discord chat"></a>
-</p>
+## What's different from upstream
 
-**Notice: Currently the code in this repository corresponds to v1.3.2 of eqMac without any Pro Features and all the newer releases are done on a private fork. Having the Free parts of the app open sourced required too much time to maintain and split off.**
+### Parametric EQ with AutoEq presets
+- A third equalizer, **Parametric**, next to Basic and Advanced.
+- **Bands:** up to 20, each with its own filter type (peak, low shelf or high shelf), frequency, gain and Q. Each band can be switched on or off.
+- **Preamp** control.
+- **Response graph:** a live frequency-response curve with a dot for each band.
+- **AutoEq search:** search the AutoEq database (about 8,800 measurements) by brand and model, for example `hd650` or `athm50x`, and load a result as a preset with one click. When a headphone has several measurements, the preferred source (oratory1990, crinacle, …) is listed first.
+- **Import and export:** import Equalizer APO / AutoEq `ParametricEQ.txt` files, and import or export presets as JSON.
+- **Accuracy:** the filters match the reference (RBJ) biquad response within 0.01 dB at 44.1, 48 and 96 kHz.
 
-## Features
-### Current
-* `Free` System Audio Processing
-* `Free` Volume Booster
-* `Free` HDMI Volume Support
-* `Free` Volume Balance support for all devices (including HDMI)
-* `Free` Basic EQ - Bass, Mids, Treble control
-* `Free` Advanced EQ - Fixed 10 bands
-* `Pro` Expert EQ - Unlimited bands, fully customizable (Filter Type, Frequency, Gain, Bandwidth)
-* `Pro` Spectrum analyzer
-* `Free/Pro` [AutoEQ](https://github.com/jaakkopasanen/AutoEq?referrer=eqMac&referer=eqMac&utm_source=eqMac) Integration - Automatic Headphone Equalization from frequency responses. `Free` for Advanced EQ and `Pro` as part of the Expert EQ
-* `Pro` AudioUnit (AU) Hosting - add 3rd party effects to the Audio Pipeline
-* `Pro` Spatial Audio - simulate different listening environments like Concert Halls or Different sized Rooms.
-* `Pro` Volume Mixer - Apply different volume levels per each application
-* Custom UI - Fully customize the look and feel of eqMac by changing the User Interface Colors (`Pro`), Feature visibility (`Free`) and arrangement (Soon).
+### No phoning home
+- **Removed:**
+  - The Sparkle update checker and auto-updater.
+  - The "over-the-air" downloads of a newer UI.
+  - Sentry crash reporting.
+  - Google Analytics and the privacy prompt.
+  - The bug-report link.
+- **Only network access left:** downloading the AutoEq index and presets from GitHub, and only when you use AutoEq. The index is cached for 7 days.
+- **UI source:** the app always uses the UI bundled inside it.
 
-### Roadmap
-Idea is to become the ultimate Audio toolbox for macOS
-* Input Audio Source - Apply effects to any device: guitar, microphone etc.
-* Virtual Output - Export the Adjusted audio to any application
-* Hotkeys - Control eqMac with Keyboard Shortcuts
-* Recorder - save any audio playback (System, Input device, File)
-* Remote control from your phone
-* Separate L/R Channel EQ - Fix hearing impairements 
-* API - Control all aspects of eqMac through a WebSocket API. Works with any programming language that supports WebSockets.
-* File playback and rendering - Apply effects to audio files and instantly render them
-* and more...
+### Everything unlocked
+- **Sections always shown:** volume and boost, balance, all equalizers and output selection.
+- **No feature toggles:** they can't be hidden or disabled.
 
-[Vote on the Features you want to see sooner](https://eqmac.app/#coming-soon)
+### Fixes
+- **Build:** builds with Xcode 27 and the current macOS SDK. Removed or deleted dependencies were vendored or dropped.
+- **Driver crash:** the audio driver no longer crashes the Core Audio helper on Macs with memory tagging (MTE).
+- **Quit crash:** quitting without the driver device no longer crashes.
+- **Window buttons:** the native macOS window buttons no longer show next to the app's own.
 
-## User support
-If you are a `Pro` customer I provide Customer Support through the Contact form on the website :)
-This project is heavily reliant on the whole community helping each other out. If you have an issue with eqMac please go through [Issues](https://github.com/bitgapp/eqMac/issues) to see if it's already being discussed, if not create a new one. Also you can [join our Discord](https://discord.eqmac.app), I'm there all the time and I like to chat with people. 
+## Building
 
-## Technology
-eqMac was built using these technologies:
-* [App](https://github.com/bitgapp/eqMac/tree/master/native/app) - Native backend to the whole app. Responsible for audio processing, filesystem access, window management, API and general lifecycle of eqMac.
-* [UI](https://github.com/bitgapp/eqMac/tree/master/ui) - Web based user interface that is hosted remotely and thus allows for Over the Air (OTA) updates & bug fixes. Built with [Angular](https://angular.io/) + [TypeScript](https://www.typescriptlang.org/) and is cached for offline availability.
-* [Driver](https://github.com/bitgapp/eqMac/tree/master/native/driver) - System Audio loopback/passthrough device based on [Apple's Null Audio Server Driver Plug-in](https://developer.apple.com/documentation/coreaudio/creating_an_audio_server_driver_plug-in) example. One of the first Examples of a macOS System Capture drivers written in Swift. The driver grabs the system audio stream and sends it to the app through a secure memory tunnel. eqMac can grab this stream, process it and send to the appropriate audio device. The driver runs in User space instead of Kernel like the previous drivers (i.e SoundFlower), which means it's much more secure and stable.
+Requirements:
+- **Xcode:** full Xcode in `/Applications`.
+- **Other tools:** CocoaPods, Node and Yarn.
+
+```sh
+./build.sh                    # UI + app + driver, Release, ad-hoc signed
+./build.sh --skip-ui          # reuse the last UI build
+./build.sh --install-driver   # also install the audio driver (asks for your password)
+```
+
+The app and driver are written to `build/Build/Products/Release/`.
+
+- **Driver version:** this app only works with the driver it builds (version 1.3.x). A driver from a newer eqMac release is reported as incompatible. Installing this one replaces it.
+- **Signing:** builds are ad-hoc signed, so they run on the Mac that built them.
+
+See [LOCAL-BUILD-NOTES.md](LOCAL-BUILD-NOTES.md) for:
+- Every change from upstream, and why it was made.
+- How to install the driver by hand.
+- Known limitations and debugging tips.
+
+## Architecture
+
+- **[App](native/app):** the native Swift app. It handles audio processing, the equalizers, window management and the bridge to the UI.
+- **[UI](ui):** an Angular + TypeScript interface. It runs in a web view and is bundled inside the app.
+- **[Driver](native/driver):** a user-space Core Audio driver. It captures system audio and passes it to the app.
 
 ## Credits
 
-[@nodeful](https://github.com/nodeful) - Creator and Developer of eqMac
+- [@nodeful](https://github.com/nodeful) and [bitgapp](https://github.com/bitgapp): creators of eqMac.
+- [Jaakko Pasanen](https://github.com/jaakkopasanen): [AutoEq](https://github.com/jaakkopasanen/AutoEq). The headphone measurements come from oratory1990, crinacle, Rtings and the other sources it credits.
+- [Max Heim](https://github.com/0bmxa): [Pancake](https://github.com/0bmxa/Pancake), the first Swift Audio Server plug-in driver.
+- [@titanicbobo](https://github.com/titanicbobo): the Big Sur [icon design](assets/icon/icon.svg).
 
-[@titanicbobo](https://github.com/titanicbobo) - For the [Big Sur icon design](https://github.com/bitgapp/eqMac/blob/master/assets/icon/icon.svg)
+This fork is not affiliated with or supported by bitgapp. Report problems with it here, not upstream.
 
-[Max Heim](https://github.com/0bmxa) - For his research and work on creating the first Swift based Audio Server Plug-in Driver - [Pancake](https://github.com/0bmxa/Pancake)
+## License
+
+[Apache License 2.0](LICENSE), same as upstream.
