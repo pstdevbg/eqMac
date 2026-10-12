@@ -21,20 +21,22 @@ class Window: NSWindow, NSWindowDelegate {
     self.titlebarAppearsTransparent = true
     self.isMovableByWindowBackground = true
     
-    Async.delay(1000, completion: {
-      for subview in self.contentView!.superview!.subviews {
-        if subview.isKind(of: NSClassFromString("NSTitlebarContainerView")!) {
-          let titleBarView = subview.subviews[0]
-          for button in titleBarView.subviews {
-            if button.isKind(of: NSButton.self) {
-              button.isHidden = true
-            }
-          }
-        }
-      }
-    })
+    hideStandardButtons()
   }
-  
+
+  // The UI draws its own close/minimize/maximize buttons, so hide the native ones.
+  // AppKit can re-create or re-show them when the titlebar is laid out again, so this is
+  // also called when the window is shown, resized or becomes key.
+  private func hideStandardButtons () {
+    for type: NSWindow.ButtonType in [.closeButton, .miniaturizeButton, .zoomButton] {
+      standardWindowButton(type)?.isHidden = true
+    }
+  }
+
+  func windowDidBecomeKey(_ notification: Notification) {
+    hideStandardButtons()
+  }
+
   func windowDidChangeOcclusionState(_ notification: Notification) {
     // occlusionState.contains(.visible)
   }
@@ -144,6 +146,7 @@ class Window: NSWindow, NSWindowDelegate {
   func show() {
     self.makeKeyAndOrderFront(nil)
     self.becomeFirstResponder()
+    hideStandardButtons()
   }
   
   func hide() {
@@ -175,5 +178,6 @@ class Window: NSWindow, NSWindowDelegate {
   func windowDidResize(_ notification: Notification) {
     Application.dispatchAction(UIAction.setWidth(width))
     Application.dispatchAction(UIAction.setHeight(height))
+    hideStandardButtons()
   }
 }
