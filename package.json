@@ -56,7 +56,6 @@
     "@angular-devkit/build-angular": "^12.2.7",
     "@angular/compiler-cli": "^12.2.7",
     "@angular/language-service": "^12.2.7",
-    "@types/google.analytics": "0.0.41",
     "@types/node": "^12.11.1",
     "cloudflare": "^2.7.0",
     "dayjs": "^1.10.5",

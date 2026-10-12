@@ -10,14 +10,12 @@ import Foundation
 import Cocoa
 import AMCoreAudio
 import Dispatch
-import Sentry
 import EmitterKit
 import AVFoundation
 import SwiftyUserDefaults
 import SwiftyJSON
 import ServiceManagement
 import ReSwift
-import Sparkle
 import Shared
 
 enum VolumeChangeDirection: String {
@@ -56,8 +54,6 @@ class Application {
   static var dataBus: ApplicationDataBus!
   static let error = EmitterKit.Event<String>()
   
-  static var updater = SUUpdater(for: Bundle.main)!
-  
   static let store: Store = Store(
     reducer: ApplicationStateReducer,
     state: ApplicationState.load(),
@@ -77,14 +73,8 @@ class Application {
   static var equalizersTypeChangedListener: EventListener<EqualizerType>?
 
   static public func start () {
-    if (!Constants.DEBUG) {
-      setupCrashReporting()
-    }
-    
     self.settings = Settings()
 
-    Networking.startMonitor()
-    
     Driver.check {
       Sources.getInputPermission {
         AudioDevice.register = true
@@ -126,20 +116,6 @@ class Application {
     }
   }
   
-  private static func setupCrashReporting () {
-    // Create a Sentry client and start crash handler
-    SentrySDK.start { options in
-      options.dsn = Constants.SENTRY_ENDPOINT
-      // Only send crash reports if user gave consent
-      options.beforeSend = { event in
-        if (store.state.settings.doCollectCrashReports) {
-          return event
-        }
-        return nil
-      }
-    }
-  }
-
   private static var settingUpAudio = false
   private static func setupAudio () {
     if (settingUpAudio) { return }
@@ -622,11 +598,6 @@ class Application {
   
   static func restartMac () {
     Script.apple("restart_mac")
-  }
-  
-  static func checkForUpdates () {
-    // Update checks disabled
-    Console.log("Update checks are disabled in this build")
   }
   
   static func uninstall () {

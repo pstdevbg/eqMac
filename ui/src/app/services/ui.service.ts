@@ -6,8 +6,6 @@ import { KnobControlStyle } from '../../../../modules/components/src'
 
 export interface UISettings {
   replaceKnobsWithSliders?: boolean
-  doCollectTelemetry?: boolean
-  privacyFormSeen?: boolean
   knobControlStyle?: KnobControlStyle
 
   volumeFeatureEnabled?: boolean

@@ -17,10 +17,6 @@ export class HelpComponent implements OnInit {
         type: 'button',
         label: 'FAQ',
         action: this.faq.bind(this)
-      }, {
-        type: 'button',
-        label: 'Report a Bug',
-        action: this.reportBug.bind(this)
       }
     ]
   ]
@@ -39,10 +35,6 @@ export class HelpComponent implements OnInit {
 
   async fetchInfo () {
     this.info = await this.app.getInfo()
-  }
-
-  reportBug () {
-    this.app.openURL(this.CONST.BUG_REPORT_URL)
   }
 
   faq () {

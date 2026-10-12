@@ -39,11 +39,6 @@ class ApplicationDataBus: DataBus {
       return "FAQ Openned"
     }
     
-    self.on(.POST, "/bug") { _, _ in
-      NSWorkspace.shared.open(Constants.BUG_REPORT_URL)
-      return "Bug Report Openned"
-    }
-    
     self.on(.POST, "/open-url") { data, _ in
       guard let urlString = (data["url"] as? String), let url = URL(string: urlString), let host = url.host else {
         throw "Invalid URL"
@@ -85,11 +80,6 @@ class ApplicationDataBus: DataBus {
 //      return nil
 //    }
 //
-    self.on(.GET, "/update") { _, _ in
-      Application.checkForUpdates()
-      return "Checking for updates."
-    }
-
     self.on(.GET, "/enabled") { _, _ in
       return [ "enabled": Application.store.state.enabled ]
     }

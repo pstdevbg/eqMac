@@ -9,23 +9,18 @@
 import Cocoa
 import SwiftyJSON
 import ServiceManagement
-import Sparkle
 import EmitterKit
 import AMCoreAudio
 import Shared
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate, SUUpdaterDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate {
 
-  var updateProcessed = EmitterKit.Event<Void>()
-  var willBeDownloadingUpdate = false
-  
   func applicationDidFinishLaunching(_ aNotification: Notification) {
     for window in NSApplication.shared.windows {
       window.close()
     }
 
-    // Update checks disabled: Sparkle is never initialized, start straight away
     Application.start()
 
     NSWorkspace.shared.notificationCenter.addObserver(
@@ -62,42 +57,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, SUUpdaterDelegate {
     }
   }
   
-  func updaterDidNotFindUpdate(_ updater: SUUpdater) {
-    updateProcessed.emit()
-  }
-  
-  func updater(_ updater: SUUpdater, userDidSkipThisVersion item: SUAppcastItem) {
-    updateProcessed.emit()
-  }
-  
-  func updater(_ updater: SUUpdater, didCancelInstallUpdateOnQuit item: SUAppcastItem) {
-    updateProcessed.emit()
-  }
-  
-  func updater(_ updater: SUUpdater, willDownloadUpdate item: SUAppcastItem, with request: NSMutableURLRequest) {
-    willBeDownloadingUpdate = true
-  }
-  
-  func updater(_ updater: SUUpdater, didDismissUpdateAlertPermanently permanently: Bool, for item: SUAppcastItem) {
-    Async.delay(500, completion: {
-      if !self.willBeDownloadingUpdate {
-        self.updateProcessed.emit()
-      }
-    })
-  }
-  
-  func userDidCancelDownload(_ updater: SUUpdater) {
-    updateProcessed.emit()
-  }
-  
-  func updater(_ updater: SUUpdater, didAbortWithError error: Error) {
-    updateProcessed.emit()
-  }
-  
-  func updater(_ updater: SUUpdater, failedToDownloadUpdate item: SUAppcastItem, error: Error) {
-    updateProcessed.emit()
-  }
-
   @objc func willSleep(event: NSNotification) {
     Application.handleSleep()
   }

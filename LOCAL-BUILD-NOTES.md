@@ -55,11 +55,9 @@ sudo killall coreaudiod
 | `bitgapp/AMCoreAudio` was deleted from GitHub, and the pinned commit `b312d15` is only fetchable by SHA from the original repo, which CocoaPods' plain clone can't do | That commit is vendored and used via `:path` | `native/Podfile`, `native/vendor/AMCoreAudio` |
 | The `AudioKit/Specs` pod source was deleted, and no pod uses it | Commented out | `native/Podfile` |
 | Newer macOS SDKs no longer have the `CoreAudio.AudioHardwareBase` submodule | Changed to `import CoreAudio` | `native/vendor/AMCoreAudio/Source/**` |
-| Sentry 7.1.3 relied on headers being included indirectly, which newer libc++ and the SDK no longer do | A `post_install` hook adds `#include <exception>` and `#include <sys/_types/_ucontext64.h>` | `native/Podfile` |
 | Xcode 27 couldn't resolve the `Minizip` module that `Zip`'s Swift module depends on | Added the Minizip module path to the app's `SWIFT_INCLUDE_PATHS`, and `$(inherited)` to the app target's setting | `native/Podfile`, `app/eqMac.xcodeproj` |
-| A post-build step uploaded debug symbols to upstream's Sentry project, and failed without `sentry-cli` | Disabled (`exit 0`) | `app/eqMac.xcodeproj` (Run Script phase) |
 | The driver's post-build step installs it with `sudo` | Skipped when `EQMAC_SKIP_DRIVER_INSTALL=YES` | `driver/Driver.xcodeproj` (Run Script phase) |
-| The UI build failed: TypeScript auto-loaded every `@types` package, and newer `@types/minimatch`/`glob` don't work with TypeScript 4.3 | Limited the auto-loaded types to `node` and `google.analytics`, added `skipLibCheck`, and pinned `@types/minimatch@5.1.2` | `ui/tsconfig.json`, `package.json` |
+| The UI build failed: TypeScript auto-loaded every `@types` package, and newer `@types/minimatch`/`glob` don't work with TypeScript 4.3 | Limited the auto-loaded types to `node`, added `skipLibCheck`, and pinned `@types/minimatch@5.1.2` | `ui/tsconfig.json`, `package.json` |
 | Upstream git-ignores `yarn.lock`, so fresh clones resolve whatever versions are newest | Root `yarn.lock` committed (`!/yarn.lock` in `.gitignore`) | `.gitignore`, `yarn.lock` |
 | `ui/package.json`'s build copies into `native/app/Embedded/`, which doesn't exist in a fresh clone | `build.sh` creates it | `build.sh` |
 
@@ -71,10 +69,13 @@ The root `yarn.lock` is committed, although upstream git-ignores it, so that fre
 
 - **Feature guards disabled.** The volume, balance, equalizer and output sections are always shown. They can't be turned off in Settings (`ui/src/app/services/ui.service.ts`).
 - **The app always uses its bundled UI.** Release builds used to load the UI from `https://ui-v3.eqmac.app`, or from a cached remote copy, so local UI changes never appeared. The app now always unpacks `ui.zip` from its own bundle (`native/app/Source/UI/UI.swift`).
-- **Update checks removed.**
-  - Sparkle is never initialized, and the app starts straight away instead of waiting for an update check (`AppDelegate.swift`).
-  - The UI's "check for updates" action does nothing (`Application.swift`).
-  - `SUFeedURL` was removed and `SUEnableAutomaticChecks` set to false (`Info.plist`).
+- **Updates, crash reporting, analytics and feedback removed.** The only network access left is the AutoEq database, and only when you use it.
+  - **Sparkle** (app updates): the pod, the `SUUpdaterDelegate` code, the update settings, the `/update` route, the feed URLs, the `SU*` keys in `Info.plist` and the "Sign Sparkle" build phase are all removed.
+  - **OTA UI updates**: the code that downloaded a newer UI from `ui-v3.eqmac.app` is removed, along with the `SwiftHTTP` pod and the `Connectivity` Swift package, which only it used (`UI.swift`, `Networking.swift`).
+  - **Sentry** (crash reports): the pod, the SDK start-up code, the DSN, the dSYM upload build phase and the crash-report consent setting are removed.
+  - **Google Analytics**: `analytics.service.ts`, the first-launch privacy prompt and `@types/google.analytics` are removed.
+  - **Settings**: the "Updates" and "Privacy" sections are gone. The native state no longer has `doAutoCheckUpdates`, `doOTAUpdates`, `doBetaUpdates` or `doCollectCrashReports`. Values that older versions saved are ignored when the state loads.
+  - **Help**: the "Report a Bug" button and its URL are removed. FAQ is kept.
 
 ### Bug fixes
 

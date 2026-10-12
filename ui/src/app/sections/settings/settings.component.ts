@@ -5,7 +5,6 @@ import { ApplicationService } from '../../services/app.service'
 import { MatDialog } from '@angular/material/dialog'
 import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component'
 import { StatusItemIconType, UIService } from '../../services/ui.service'
-import { AnalyticsService } from '../../services/analytics.service'
 import { SemanticVersion } from '../../services/semantic-version.service'
 import { OptionsDialogComponent } from '../../components/options-dialog/options-dialog.component'
 import { KnobControlStyle } from '../../../../../modules/components/src'
@@ -58,46 +57,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  doCollectTelemetryOption: CheckboxOption = {
-    type: 'checkbox',
-    label: 'Send Analytics telemetry',
-    tooltip: `
-eqMac would collect anonymous Telemetry analytics data like:
-
-• macOS Version
-• App and UI Version
-• Country (IP Addresses are anonymized)
-
-This helps us understand distribution of our users.
-`,
-    value: false,
-    toggled: doCollectTelemetry => {
-      this.ui.setSettings({ doCollectTelemetry })
-      if (doCollectTelemetry) {
-        this.analytics.init()
-      } else {
-        this.analytics.deinit()
-      }
-    }
-  }
-
-  doCollectCrashReportsOption: CheckboxOption = {
-    type: 'checkbox',
-    label: 'Send Crash reports',
-    tooltip: `
-eqMac would send anonymized crash reports
-back to the developer in case eqMac crashes.
-This helps us understand improve eqMac 
-and make it a more stable product.
-`,
-    value: false,
-    toggled: doCollectCrashReports => {
-      this.settingsService.setDoCollectCrashReports({
-        doCollectCrashReports
-      })
-    }
-  }
-
   iconModeOption: SelectOption = {
     type: 'select',
     label: 'Show Icon',
@@ -129,57 +88,6 @@ and make it a more stable product.
     label: 'Uninstall eqMac',
     hoverable: false,
     action: this.uninstall.bind(this)
-  }
-
-  updateOption: ButtonOption = {
-    type: 'button',
-    label: 'Check for Updates',
-    action: this.update.bind(this)
-  }
-
-  autoCheckUpdatesOption: CheckboxOption = {
-    type: 'checkbox',
-    value: false,
-    label: 'Auto Check',
-    toggled: doAutoCheckUpdates => {
-      this.settingsService.setDoAutoCheckUpdates({
-        doAutoCheckUpdates
-      })
-    }
-  }
-
-  otaUpdatesOption: CheckboxOption = {
-    type: 'checkbox',
-    value: false,
-    label: 'OTA Updates',
-    tooltip: `
-Because eqMac's User Interface is built with Web Technologies 
-the developer can periodically push Over the Air (OTA) updates,
-make minor bug fixes and UI improvements,
-all without needing the user to do a full app update.
-`,
-    tooltipAsComponent: false,
-    toggled: doOTAUpdates => {
-      this.settingsService.setDoOTAUpdates({
-        doOTAUpdates
-      })
-    }
-  }
-
-  betaUpdatesOption: CheckboxOption = {
-    type: 'checkbox',
-    value: false,
-    label: 'Beta Program',
-    tooltip: `
-Get and test the most latest changes to eqMac.
-Help the developer identify and fix uncaught issues, 
-before they go out to all users.
-`,
-    toggled: doBetaUpdates => {
-      this.settingsService.setDoBetaUpdates({
-        doBetaUpdates
-      })
-    }
   }
 
   statusItemIconTypeOption: SelectOption = {
@@ -317,27 +225,6 @@ before they go out to all users.
     [ this.hideShowFeaturesOption ],
 
     [ this.divider ],
-
-    [ { type: 'label', label: 'Updates' } ],
-    [
-      this.betaUpdatesOption,
-      this.autoCheckUpdatesOption,
-      this.otaUpdatesOption
-    ],
-    [
-      this.updateOption
-    ],
-
-    [ this.divider ],
-
-    // Privacy
-    [ { type: 'label', label: 'Privacy' } ],
-    [
-      this.doCollectTelemetryOption,
-      this.doCollectCrashReportsOption
-    ],
-
-    [ this.divider ],
     // Misc
     [ this.uninstallOption ]
   ]
@@ -347,7 +234,6 @@ before they go out to all users.
     public app: ApplicationService,
     public dialog: MatDialog,
     public ui: UIService,
-    public analytics: AnalyticsService,
     private readonly changeRef: ChangeDetectorRef
   ) {
   }
@@ -367,42 +253,25 @@ before they go out to all users.
       launchOnStartup,
       iconMode,
       UISettings,
-      doCollectCrashReports,
-      doAutoCheckUpdates,
-      doOTAUpdates,
       alwaytOnTop,
       statusItemIconType,
-      doBetaUpdates,
       uiScale
     ] = await Promise.all([
       this.settingsService.getLaunchOnStartup(),
       this.settingsService.getIconMode(),
       this.ui.getSettings(),
-      this.settingsService.getDoCollectCrashReports(),
-      this.settingsService.getDoAutoCheckUpdates(),
-      this.settingsService.getDoOTAUpdates(),
       this.ui.getAlwaysOnTop(),
       this.ui.getStatusItemIconType(),
-      this.settingsService.getDoBetaUpdates(),
       this.ui.getScale()
     ])
     this.iconModeOption.selectedId = iconMode
     this.launchOnStartupOption.value = launchOnStartup
     this.replaceKnobsWithSlidersOption.value = UISettings.replaceKnobsWithSliders
     this.knobControlStyleOption.selectedId = UISettings.knobControlStyle
-    this.doCollectTelemetryOption.value = UISettings.doCollectTelemetry
-    this.doCollectCrashReportsOption.value = doCollectCrashReports
-    this.autoCheckUpdatesOption.value = doAutoCheckUpdates
-    this.otaUpdatesOption.value = doOTAUpdates
     this.alwaysOnTopOption.value = alwaytOnTop
     this.statusItemIconTypeOption.selectedId = statusItemIconType
-    this.betaUpdatesOption.value = doBetaUpdates
     this.uiScaleSlider.value = uiScale
     this.setUIScaleScreenValue()
-  }
-
-  async update () {
-    this.app.update()
   }
 
   async uninstall () {

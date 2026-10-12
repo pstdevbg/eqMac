@@ -7,17 +7,6 @@ workspace 'eqMac.xcworkspace'
 use_frameworks!
 
 post_install do |installer|
-  # Sentry 7.1.3 relies on headers being included transitively, which the newer macOS SDK / libc++ no longer does
-  {
-    'Pods/Sentry/Sources/SentryCrash/Recording/Monitors/SentryCrashMonitor_CPPException.cpp' => '#include <exception>',
-    'Pods/Sentry/Sources/SentryCrash/Recording/Tools/SentryCrashMachineContext.c' => '#include <sys/_types/_ucontext64.h>'
-  }.each do |path, include|
-    src = File.read(path)
-    next if src.include?(include)
-    File.chmod(0644, path)
-    File.write(path, include + "\n" + src)
-  end
-
   # Zip's Swift module re-exports its internal Minizip module, which newer Xcode must also resolve from the app target
   installer.aggregate_targets.each do |aggregate|
     aggregate.xcconfigs.each do |config_name, xcconfig|
@@ -45,14 +34,11 @@ project 'app/eqMac.xcodeproj'
 target 'eqMac' do
   project 'app/eqMac.xcodeproj'
 
-  pod 'SwiftHTTP', '~> 3.0'
   pod 'AMCoreAudio', :path => 'vendor/AMCoreAudio' # bitgapp fork deleted; pinned commit b312d15 vendored from rnine/AMCoreAudio
   pod 'WebViewJavascriptBridge', '~> 6.0'
 #  pod 'ReachabilitySwift'
   pod 'ReSwift', '~> 6.1'
   pod 'SwiftLint'
-  pod 'Sparkle', '~> 1.24'
-  pod 'Sentry', '~> 7.1.3'
   pod 'EmitterKit', '~> 5.2.2'
   pod 'SwiftyJSON', '~> 4.2'
   pod 'SwiftyUserDefaults', '4.0'

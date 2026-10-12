@@ -10,7 +10,6 @@ import { UIService } from './services/ui.service'
 import { FadeInOutAnimation, FromTopAnimation } from '@eqmac/components'
 import { MatDialog, MatDialogRef } from '@angular/material/dialog'
 import { TransitionService } from './services/transitions.service'
-import { AnalyticsService } from './services/analytics.service'
 import { ApplicationService } from './services/app.service'
 import { SettingsService, IconMode } from './sections/settings/settings.service'
 import { ToastService } from './services/toast.service'
@@ -65,7 +64,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     public ui: UIService,
     public dialog: MatDialog,
     public transitions: TransitionService,
-    public analytics: AnalyticsService,
     public app: ApplicationService,
     public settings: SettingsService,
     public toast: ToastService
@@ -141,110 +139,6 @@ export class AppComponent implements OnInit, AfterContentInit {
     await this.sync()
     await this.fixUIMode()
     this.startDimensionsSync()
-    await this.setupPrivacy()
-  }
-
-  async setupPrivacy () {
-    const [ uiSettings ] = await Promise.all([
-      this.ui.getSettings()
-    ])
-
-    if (typeof uiSettings.privacyFormSeen !== 'boolean') {
-      let doCollectTelemetry = uiSettings.doCollectTelemetry ?? false
-      let doCollectCrashReports = await this.settings.getDoCollectCrashReports()
-      let saving = false
-
-      const doCollectTelemetryOption: Option = {
-        type: 'checkbox',
-        label: 'Send Anonymous Analytics data',
-        tooltip: `
-eqMac would collect anonymous Telemetry analytics data like:
-
-• macOS Version
-• App and UI Version
-• Country (IP Addresses are anonymized)
-
-This helps us understand distribution of our users.
-`,
-        tooltipAsComponent: true,
-        value: doCollectTelemetry,
-        isEnabled: () => !saving,
-        toggled: doCollect => {
-          doCollectTelemetry = doCollect
-        }
-      }
-
-      const doCollectCrashReportsOption: Option = {
-        type: 'checkbox',
-        label: 'Send Anonymous Crash reports',
-        tooltip: `
-eqMac would send anonymized crash reports
-back to the developer in case eqMac crashes.
-This helps us understand improve eqMac 
-and make it a more stable product.
-`,
-        tooltipAsComponent: true,
-        value: doCollectCrashReports,
-        isEnabled: () => !saving,
-        toggled: doCollect => {
-          doCollectCrashReports = doCollect
-        }
-      }
-      const privacyDialog: MatDialogRef<OptionsDialogComponent> = this.dialog.open(OptionsDialogComponent, {
-        hasBackdrop: true,
-        disableClose: true,
-        data: {
-          options: [
-            [ { type: 'label', label: 'Privacy' } ],
-            [ {
-              type: 'label', label: `eqMac respects its user's privacy 
-and is giving you a choice what data you wish to share with the developer.
-This data would help us improve and grow the product.`
-            } ],
-            [ doCollectTelemetryOption ],
-            [ doCollectCrashReportsOption ],
-            [
-              {
-                type: 'button',
-                label: 'Save',
-                isEnabled: () => !saving,
-                action: () => privacyDialog.close()
-              },
-              {
-                type: 'button',
-                label: 'Accept all',
-                isEnabled: () => !saving,
-                action: async () => {
-                  doCollectCrashReports = true
-                  doCollectTelemetry = true
-                  doCollectCrashReportsOption.value = true
-                  doCollectTelemetryOption.value = true
-                  saving = true
-                  await this.utils.delay(200)
-                  privacyDialog.close()
-                }
-              }
-            ]
-          ] as Options
-        }
-      })
-
-      await privacyDialog.afterClosed().toPromise()
-
-      await Promise.all([
-        this.ui.setSettings({
-          privacyFormSeen: true,
-          doCollectTelemetry
-        }),
-        this.settings.setDoCollectCrashReports({
-          doCollectCrashReports
-        })
-      ])
-    }
-
-    if (uiSettings.doCollectTelemetry) {
-      await this.analytics.init()
-    }
   }
 
   async ngAfterContentInit () {
